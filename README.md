@@ -220,23 +220,4 @@ npm run build
 - No environment variables required for basic functionality
 - Easy to add API endpoints and configuration
 
-### Hosting
-- **Static Hosting** - Works with any static hosting service
-- **CDN Ready** - Optimized for content delivery networks
-- **HTTPS Ready** - Secure by default
 
-## 📝 License
-
-MIT License - Feel free to use this project for your own sales lead management needs.
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
-
-## 📞 Support
-
-For questions or support, please open an issue in the repository or contact the development team.
