@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import './HomePage.css';
 
 const HomePage = () => {
   const aboutRef = useRef(null);
   const isInView = useInView(aboutRef, { once: true, threshold: 0.3 });
   const trackRef = useRef(null);
+  const navigate = useNavigate();
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
@@ -889,7 +891,7 @@ Consider your team's technical capabilities and resources. Some integrations req
           </div>
 
           <div className="blogs-footer">
-            <button className="view-all-btn" onClick={() => alert('This would show all blogs page')}>
+            <button className="view-all-btn" onClick={() => navigate('/blogs')}>
               View All Articles
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M5 12h14M12 5l7 7-7 7"/>

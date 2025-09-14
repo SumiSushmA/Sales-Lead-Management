@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import './Header.css';
 
 const Header = () => {
@@ -8,6 +9,7 @@ const Header = () => {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isOverHero, setIsOverHero] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const controlHeader = () => {
@@ -44,14 +46,17 @@ const Header = () => {
         >
           <div className="header-container">
             {/* Logo */}
-            <div className="logo">
+            <div className="logo" onClick={() => navigate('/')}>
               <span className="logo-text">Sales Lead</span>
             </div>
 
             {/* Right side actions */}
             <div className="header-actions">
               {/* Blogs Button */}
-              <button className="blogs-button">
+              <button 
+                className="blogs-button"
+                onClick={() => navigate('/blogs')}
+              >
                 Blogs <span className="blogs-arrow">→</span>
               </button>
 
@@ -81,7 +86,7 @@ const Header = () => {
                 className="mobile-menu"
               >
                 <ul className="mobile-nav-list">
-                  <li><a href="#blogs">Blogs</a></li>
+                  <li><button onClick={() => navigate('/blogs')}>Blogs</button></li>
                 </ul>
               </motion.div>
             )}
