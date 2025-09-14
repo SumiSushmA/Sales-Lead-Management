@@ -375,26 +375,17 @@ Consider your team's technical capabilities and resources. Some integrations req
     <div className="homepage">
       {/* Hero Section */}
       <section className="hero">
-        {/* Abstract Background Elements */}
-        <div className="hero-background">
-          <div className="abstract-shape shape-1"></div>
-          <div className="abstract-shape shape-2"></div>
-          <div className="abstract-shape shape-3"></div>
-          <div className="abstract-shape shape-4"></div>
-        </div>
 
-        {/* Curved Side Decorations */}
-        <div className="curved-decoration left"></div>
-        <div className="curved-decoration right"></div>
 
         {/* Transparent Sales Lead Management Image */}
         <div className="hero-transparent-image">
           <img 
-            src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=1920&h=1080&fit=crop&auto=format" 
+            src="/hero.jpg" 
             alt="Sales Lead Management" 
             className="transparent-bg-image"
           />
         </div>
+
 
         {/* Hero Content Container */}
         <div className="hero-container">
@@ -404,36 +395,35 @@ Consider your team's technical capabilities and resources. Some integrations req
             transition={{ duration: 0.8, delay: 0.2 }}
             className="hero-content"
           >
-            {/* Main Heading */}
+            {/* Main Heading - Rise at Seven Style */}
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
               className="hero-title"
             >
-              Master Your
+              We Create
               <span className="title-highlight">
-                Sales Funnel
+                Sales Leaders
                 <img
-                  src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=100&h=100&fit=crop&auto=format"
-                  alt="Sales Funnel"
+                  src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=120&h=120&fit=crop&auto=format"
+                  alt="Sales Leaders"
                   className="sales-image"
                 />
               </span>
-              From Lead to Conversion
             </motion.h1>
 
-            {/* Sub Heading */}
+            {/* Sub Heading - Rise at Seven Style */}
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
               className="hero-subtitle"
             >
-              Turn every lead into a customer with our intelligent lead management system
+              on every searchable platform
             </motion.p>
 
-            {/* CTA Button */}
+            {/* CTA Button - Rise at Seven Style */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -442,16 +432,27 @@ Consider your team's technical capabilities and resources. Some integrations req
             >
               <motion.button
                 whileHover={{ 
-                  scale: 1.1,
-                  borderRadius: "50px",
+                  scale: 1.05,
                   backgroundColor: "#ffffff",
-                  color: "#2c3e50"
+                  color: "#000000"
                 }}
-                whileTap={{ scale: 0.95 }}
+                whileTap={{ scale: 0.98 }}
                 className="hero-button"
               >
-                Start Managing Leads
-                <span className="button-arrow">→</span>
+                Get In Touch
+                <svg 
+                  width="12" 
+                  height="12" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2.5" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                  className="button-arrow"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
               </motion.button>
             </motion.div>
           </motion.div>
@@ -460,7 +461,7 @@ Consider your team's technical capabilities and resources. Some integrations req
 
 
       {/* About Section */}
-      <section ref={aboutRef} className="about-section">
+      <section id="about" ref={aboutRef} className="about-section">
         <div className="about-container">
           <div className="about-content">
             <motion.div
@@ -514,7 +515,7 @@ Consider your team's technical capabilities and resources. Some integrations req
       </section>
 
       {/* Problems Section */}
-      <section className="problems-section">
+      <section id="problem" className="problems-section">
         <div className="problems-container">
           <div className="problems-header">
             <h2 className="problems-title">Problems</h2>
@@ -552,7 +553,7 @@ Consider your team's technical capabilities and resources. Some integrations req
       </section>
 
       {/* Features Section with Card Design */}
-      <section className="features-section">
+      <section id="feature" className="features-section">
         <div className="features-container">
           <div className="features-header">
             <h2 className="features-title">Features</h2>
@@ -697,7 +698,7 @@ Consider your team's technical capabilities and resources. Some integrations req
       </section>
 
       {/* How it Works Section - Scroll-based Reveal Design */}
-      <section className="how-it-works-section">
+      <section id="how-it-works" className="how-it-works-section">
         <div className="section-header">
           <h2>How It Works</h2>
           <div className="manual-navigation">
@@ -794,7 +795,7 @@ Consider your team's technical capabilities and resources. Some integrations req
       </section>
 
       {/* Blogs Section */}
-      <section className="blogs-section">
+      <section id="blog" className="blogs-section">
         <div className="blogs-container">
           <div className="blogs-header">
             <h2 className="blogs-title">Latest Insights</h2>
