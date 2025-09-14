@@ -9,17 +9,28 @@ const Header = () => {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isOverHero, setIsOverHero] = useState(true);
+  const [scrollingDown, setScrollingDown] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
+    let ticking = false;
+    
     const controlHeader = () => {
       const currentScrollY = window.scrollY;
       
-      // Always show header when scrolling up or at top
-      if (currentScrollY < lastScrollY || currentScrollY < 10) {
+      // Show header when at the top
+      if (currentScrollY < 10) {
         setIsVisible(true);
-      } else if (currentScrollY > 100) {
-        // Show header when scrolling down past 100px
+        setScrollingDown(false);
+      }
+      // Hide header when scrolling down (more than 100px)
+      else if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setScrollingDown(true);
+        setIsVisible(false);
+      }
+      // Show header when scrolling up
+      else if (currentScrollY < lastScrollY) {
+        setScrollingDown(false);
         setIsVisible(true);
       }
       
@@ -28,10 +39,18 @@ const Header = () => {
       setIsOverHero(currentScrollY < heroHeight - 100);
       
       setLastScrollY(currentScrollY);
+      ticking = false;
     };
 
-    window.addEventListener('scroll', controlHeader);
-    return () => window.removeEventListener('scroll', controlHeader);
+    const handleScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(controlHeader);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
 
   return (
@@ -54,22 +73,13 @@ const Header = () => {
             <nav className="header-nav">
               <ul className="nav-list">
                 <li><a href="#about" className="nav-link">About</a></li>
-                <li><a href="#problem" className="nav-link">Problem</a></li>
                 <li><a href="#feature" className="nav-link">Feature</a></li>
                 <li><a href="#how-it-works" className="nav-link">How it Works</a></li>
-                <li><a href="#blog" className="nav-link">Blogs</a></li>
               </ul>
             </nav>
 
             {/* Right side actions */}
             <div className="header-actions">
-              {/* Blogs Button */}
-              <button 
-                className="cta-button"
-                onClick={() => navigate('/blog')}
-              >
-                Blogs <span className="cta-arrow">↗</span>
-              </button>
 
               {/* Mobile menu button */}
               <button 
@@ -98,11 +108,8 @@ const Header = () => {
               >
                 <ul className="mobile-nav-list">
                   <li><a href="#about">About</a></li>
-                  <li><a href="#problem">Problem</a></li>
                   <li><a href="#feature">Feature</a></li>
                   <li><a href="#how-it-works">How it Works</a></li>
-                  <li><a href="#blog">Blogs</a></li>
-                  <li><button onClick={() => navigate('/blog')}>Blogs</button></li>
                 </ul>
               </motion.div>
             )}
