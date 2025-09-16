@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import './AboutPage.css';
 
 const AboutPage = () => {
@@ -13,7 +13,7 @@ const AboutPage = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [activeFeature, setActiveFeature] = useState(0);
   const [currentFeature, setCurrentFeature] = useState(0);
-  const [activeScrollSection, setActiveScrollSection] = useState(1);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
 
   const handleMouseDown = (e) => {
     setIsDragging(true);
@@ -88,46 +88,18 @@ const AboutPage = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Enhanced scroll detection
-  useEffect(() => {
-    let ticking = false;
-    
-    const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          const currentScroll = window.scrollY;
-          const howItWorksSection = document.querySelector('.how-it-works-section');
-          
-          if (!howItWorksSection) {
-            ticking = false;
-            return;
-          }
-          
-          const sectionTop = howItWorksSection.offsetTop;
-          const sectionHeight = howItWorksSection.offsetHeight;
-          const relativeScroll = currentScroll - sectionTop;
-          const sectionProgress = relativeScroll / sectionHeight;
-          
-          if (sectionProgress < 0.08) {
-            setActiveScrollSection(1);
-          } else if (sectionProgress < 0.25) {
-            setActiveScrollSection(2);
-          } else if (sectionProgress < 0.45) {
-            setActiveScrollSection(3);
-          } else {
-            setActiveScrollSection(3);
-          }
-          
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
 
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+  // Touch device detection
+  useEffect(() => {
+    const checkTouchDevice = () => {
+      setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    };
+    
+    checkTouchDevice();
+    window.addEventListener('resize', checkTouchDevice);
+    return () => window.removeEventListener('resize', checkTouchDevice);
   }, []);
+
 
   const getFeatures = () => {
     return [
@@ -162,50 +134,53 @@ const AboutPage = () => {
     ];
   };
 
-  const getHowItWorksData = () => {
+
+  const getParallaxCards = () => {
     return [
       {
         id: 1,
-        title: "LEAD CAPTURE",
-        description: "Automatically capture leads from multiple channels and score them in real-time for maximum conversion potential.",
-        icon: (
-          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
-            <circle cx="12" cy="12" r="6" stroke="currentColor" strokeWidth="2"/>
-            <circle cx="12" cy="12" r="2" fill="currentColor"/>
-          </svg>
-        )
+        title: "Lead Capture",
+        subtitle: "Multi-Channel Collection",
+        description: "Capture leads from multiple channels and score them in real-time for maximum conversion.",
+        features: [
+          "Multi-channel lead collection",
+          "Real-time lead scoring",
+          "Automated data validation",
+          "Instant lead assignment",
+          "CRM integration"
+        ],
+        image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop&auto=format&q=80",
+        color: "#6366f1"
       },
       {
         id: 2,
-        title: "LEAD NURTURING",
-        description: "Personalized engagement through automated sequences and multi-channel campaigns tailored to lead behavior.",
-        icon: (
-          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9 12L11 14L15 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        )
+        title: "Lead Nurturing",
+        subtitle: "Personalized Engagement",
+        description: "Personalized engagement through automated sequences and multi-channel campaigns.",
+        features: [
+          "Automated email sequences",
+          "Behavioral trigger campaigns",
+          "Multi-channel touchpoints",
+          "Personalized content delivery",
+          "Lead scoring optimization"
+        ],
+        image: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&h=600&fit=crop&auto=format&q=80",
+        color: "#8b5cf6"
       },
       {
         id: 3,
-        title: "LEAD QUALIFICATION",
-        description: "AI-powered scoring and automated workflows to identify high-value prospects and prioritize follow-up.",
-        icon: (
-          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        )
-      },
-      {
-        id: 4,
-        title: "SALES CONVERSION",
-        description: "Seamless handoff to sales teams with complete context and automated assignment for optimal results.",
-        icon: (
-          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 1V23M17 5H9.5C8.11929 5 7 6.11929 7 7.5S8.11929 10 9.5 10H14.5C15.8807 10 17 11.1193 17 12.5S15.8807 15 14.5 15H7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        )
+        title: "Sales Conversion",
+        subtitle: "Seamless Handoff",
+        description: "Seamless handoff to sales teams with complete context and automated assignment.",
+        features: [
+          "Complete lead context transfer",
+          "Automated sales team assignment",
+          "Real-time lead activity tracking",
+          "Conversion analytics and reporting",
+          "Sales team performance insights"
+        ],
+        image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&h=600&fit=crop&auto=format&q=80",
+        color: "#06b6d4"
       }
     ];
   };
@@ -528,57 +503,111 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* How it Works Section */}
-      <section id="how-it-works" className="how-it-works-section">
-        <div className="how-it-works-container">
-          <h2 className="how-it-works-title">How It Works</h2>
-          <div className="tabs-container">
-            <button 
-              className={`tab-button ${activeScrollSection === 1 ? 'active' : ''}`}
-              onClick={() => setActiveScrollSection(1)}
-            >
-              Lead Capture
-            </button>
-            <button 
-              className={`tab-button ${activeScrollSection === 2 ? 'active' : ''}`}
-              onClick={() => setActiveScrollSection(2)}
-            >
-              Lead Nurturing
-            </button>
-            <button 
-              className={`tab-button ${activeScrollSection === 3 ? 'active' : ''}`}
-              onClick={() => setActiveScrollSection(3)}
-            >
-              Sales Conversion
-            </button>
-          </div>
-          
-          <div className="tab-content">
-            <div className={`content-card ${activeScrollSection === 1 ? 'active' : ''}`}>
-              <div className="content-number">001</div>
-              <div className="content-main">
-                <h3>Lead Capture</h3>
-                <p>Automatically capture leads from multiple channels and score them in real-time for maximum conversion potential.</p>
-                <ul className="content-features">
-                  <li>Multi-channel lead collection (website, social media, email)</li>
-                  <li>Real-time lead scoring and qualification</li>
-                  <li>Automated data validation and enrichment</li>
-                  <li>Instant lead assignment to sales teams</li>
-                  <li>CRM integration and synchronization</li>
-                </ul>
-              </div>
-              <div className="content-visual">
-                <div className="check-icon">
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M9 12L11 14L15 10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
+      {/* Parallax Cards Section */}
+      <ParallaxCardsSection 
+        cards={getParallaxCards()}
+        isTouchDevice={isTouchDevice}
+      />
+
+    </div>
+  );
+};
+
+// Parallax Cards Component
+const ParallaxCardsSection = ({ cards, isTouchDevice }) => {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
+
+
+  return (
+    <section ref={containerRef} className="parallax-cards-section">
+        <div className="parallax-container">
+          <div className="parallax-sticky">
+            <div className="parallax-content">
+              <motion.h2 
+                className="parallax-title"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                viewport={{ once: true }}
+              >
+                How It Works
+              </motion.h2>
+              
+              <div className="parallax-cards">
+                {cards.map((card, index) => (
+                  <ParallaxCard 
+                    key={card.id} 
+                    card={card} 
+                    index={index}
+                    scrollYProgress={scrollYProgress}
+                    isTouchDevice={isTouchDevice}
+                  />
+                ))}
               </div>
             </div>
           </div>
         </div>
       </section>
+  );
+};
+
+// Individual Parallax Card Component
+const ParallaxCard = ({ card, index, scrollYProgress, isTouchDevice }) => {
+  const cardRef = useRef(null);
+  const { scrollYProgress: cardScrollProgress } = useScroll({
+    target: cardRef,
+    offset: ["start end", "end start"]
+  });
+
+  // Parallax transforms
+  const y = useTransform(cardScrollProgress, [0, 1], [100, -100]);
+  const scale = useTransform(cardScrollProgress, [0, 0.1, 0.9, 1], [0.9, 1, 1, 0.9]);
+  const opacity = useTransform(cardScrollProgress, [0, 0.02, 0.98, 1], [0, 1, 1, 0]);
+
+  return (
+    <motion.div
+      ref={cardRef}
+      className="parallax-card"
+      style={{
+        y: isTouchDevice ? 0 : y,
+        scale: isTouchDevice ? 1 : scale,
+        opacity: isTouchDevice ? 1 : opacity,
+      }}
+      whileHover={!isTouchDevice ? { 
+        scale: 1.02,
+        transition: { type: "spring", stiffness: 300, damping: 20 }
+      } : {}}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: index * 0.05 }}
+      viewport={{ once: true, margin: "-200px" }}
+    >
+      <div className="card-background" style={{ backgroundColor: card.color }}>
+        <img src={card.image} alt={card.title} className="card-image" />
+        <div className="card-overlay" />
+      </div>
+      
+      <div className="card-content">
+        <div className="card-number">0{card.id}</div>
+        <div className="card-text">
+          <h3 className="card-title">{card.title}</h3>
+          <p className="card-subtitle">{card.subtitle}</p>
+          <p className="card-description">{card.description}</p>
+          <ul className="card-features">
+            {card.features.map((feature, featureIndex) => (
+              <li key={featureIndex} className="feature-item">
+                {feature}
+              </li>
+            ))}
+          </ul>
+        </div>
+        
     </div>
+    </motion.div>
   );
 };
 
