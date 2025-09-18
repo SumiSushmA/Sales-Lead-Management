@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import MessageBox from '../MessageBox/MessageBox';
 import './Sidebar.css';
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { login, logout, user } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [activeTab, setActiveTab] = useState('login');
   const [loginForm, setLoginForm] = useState({
@@ -79,6 +81,16 @@ const Sidebar = () => {
 
   const handleSignIn = () => {
     setShowAuthModal(true);
+  };
+
+  const handleLogout = () => {
+    logout();
+    setMessageBox({
+      isVisible: true,
+      type: 'success',
+      message: 'Logged out successfully!'
+    });
+    navigate('/');
   };
 
   const handleCloseModal = () => {
@@ -179,13 +191,24 @@ const Sidebar = () => {
   const handleLoginSubmit = (e) => {
     e.preventDefault();
     if (validateLogin()) {
-      console.log('Login submitted:', loginForm);
-      setMessageBox({
-        isVisible: true,
-        type: 'success',
-        message: 'Login successful! (This is a demo)'
-      });
-      handleCloseModal();
+      const result = login(loginForm.email, loginForm.password);
+      
+      if (result.success) {
+        setMessageBox({
+          isVisible: true,
+          type: 'success',
+          message: result.message
+        });
+        handleCloseModal();
+        // Navigate to dashboard after successful login
+        navigate('/dashboard');
+      } else {
+        setMessageBox({
+          isVisible: true,
+          type: 'error',
+          message: result.message
+        });
+      }
     }
   };
 
@@ -233,19 +256,43 @@ const Sidebar = () => {
         ))}
       </nav>
 
-      {/* Sign In Section */}
+      {/* Sign In/User Section */}
       <div className="signin-section">
-        <div className="signin-container">
-          <button className="signin-button" onClick={handleSignIn}>
-            <div className="signin-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-              </svg>
+        {user ? (
+          <>
+            <div className="user-info">
+              <div className="user-avatar">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              </div>
+              <div className="user-details">
+                <span className="user-name">{user?.name || 'User'}</span>
+                <span className="user-email">{user?.email}</span>
+              </div>
             </div>
-          </button>
-          <span className="signin-label">Sign In</span>
-        </div>
+            <button className="logout-button" onClick={handleLogout} title="Logout">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16,17 21,12 16,7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+            </button>
+          </>
+        ) : (
+          <div className="signin-container">
+            <button className="signin-button" onClick={handleSignIn}>
+              <div className="signin-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              </div>
+            </button>
+            <span className="signin-label">Sign In</span>
+          </div>
+        )}
       </div>
 
       {/* Authentication Modal */}
