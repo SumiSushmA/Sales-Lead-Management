@@ -109,7 +109,7 @@ const ChatPage = () => {
         <div className="perplexity-layout">
           {/* Centered Title */}
           <div className="page-title">
-            <h1>Sales Lead</h1>
+            <h1>Evecta</h1>
           </div>
 
           {/* Search Bar with Icons */}

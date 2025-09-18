@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import MessageBox from '../MessageBox/MessageBox';
 import './Sidebar.css';
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { login, logout, user } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [activeTab, setActiveTab] = useState('login');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
   const [loginForm, setLoginForm] = useState({
     email: '',
     password: ''
@@ -21,31 +22,11 @@ const Sidebar = () => {
     confirmPassword: ''
   });
   const [errors, setErrors] = useState({});
-
-  // Check login status on component mount
-  useEffect(() => {
-    const checkLoginStatus = () => {
-      const token = localStorage.getItem('authToken');
-      const userData = localStorage.getItem('user');
-      if (token && userData) {
-        setIsLoggedIn(true);
-        setUser(JSON.parse(userData));
-      } else {
-        setIsLoggedIn(false);
-        setUser(null);
-      }
-    };
-    
-    checkLoginStatus();
-    
-    // Listen for storage changes
-    const handleStorageChange = () => {
-      checkLoginStatus();
-    };
-    
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+  const [messageBox, setMessageBox] = useState({
+    isVisible: false,
+    type: 'success',
+    message: ''
+  });
 
   const menuItems = [
     { 
@@ -90,15 +71,12 @@ const Sidebar = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
-    setIsLoggedIn(false);
-    setUser(null);
-    
-    // Trigger logout event
-    window.dispatchEvent(new CustomEvent('userLoggedOut'));
-    
-    alert('Logged out successfully!');
+    logout();
+    setMessageBox({
+      isVisible: true,
+      type: 'success',
+      message: 'Logged out successfully!'
+    });
   };
 
   const handleCloseModal = () => {
@@ -106,6 +84,14 @@ const Sidebar = () => {
     setErrors({});
     setLoginForm({ email: '', password: '' });
     setSignupForm({ firstName: '', lastName: '', email: '', password: '', confirmPassword: '' });
+  };
+
+  const handleCloseMessageBox = () => {
+    setMessageBox({
+      isVisible: false,
+      type: 'success',
+      message: ''
+    });
   };
 
   const handleLoginChange = (e) => {
@@ -191,26 +177,22 @@ const Sidebar = () => {
   const handleLoginSubmit = (e) => {
     e.preventDefault();
     if (validateLogin()) {
-      console.log('Login submitted:', loginForm);
+      const result = login(loginForm.email, loginForm.password);
       
-      // Store authentication data in localStorage
-      const authToken = 'demo-token-' + Date.now();
-      const userData = {
-        email: loginForm.email,
-        name: loginForm.email.split('@')[0], // Use email prefix as name
-        loginTime: new Date().toISOString()
-      };
-      
-      localStorage.setItem('authToken', authToken);
-      localStorage.setItem('user', JSON.stringify(userData));
-      
-      alert('Login successful! You can now like articles.');
-      handleCloseModal();
-      
-      // Trigger a custom event to notify other components
-      window.dispatchEvent(new CustomEvent('userLoggedIn', { 
-        detail: { user: userData, token: authToken } 
-      }));
+      if (result.success) {
+        setMessageBox({
+          isVisible: true,
+          type: 'success',
+          message: result.message
+        });
+        handleCloseModal();
+      } else {
+        setMessageBox({
+          isVisible: true,
+          type: 'error',
+          message: result.message
+        });
+      }
     }
   };
 
@@ -228,7 +210,7 @@ const Sidebar = () => {
       {/* Logo */}
       <div className="sidebar-header">
         <div className="logo">
-          <span className="logo-text">Sales Lead</span>
+          <span className="logo-text">Evecta</span>
         </div>
       </div>
 
@@ -260,7 +242,7 @@ const Sidebar = () => {
 
       {/* Sign In/User Section */}
       <div className="signin-section">
-        {isLoggedIn ? (
+        {user ? (
           <>
             <div className="user-info">
               <div className="user-avatar">
@@ -283,17 +265,17 @@ const Sidebar = () => {
             </button>
           </>
         ) : (
-          <>
-        <button className="signin-button" onClick={handleSignIn}>
-          <div className="signin-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-              <circle cx="12" cy="7" r="4"/>
-            </svg>
-          </div>
+          <div className="signin-container">
+            <button className="signin-button" onClick={handleSignIn}>
+              <div className="signin-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              </div>
             </button>
-          <span className="signin-label">Sign In</span>
-          </>
+            <span className="signin-label">Sign In</span>
+          </div>
         )}
       </div>
 
@@ -479,6 +461,14 @@ const Sidebar = () => {
           </div>
         </div>
       )}
+
+      {/* Custom Message Box */}
+      <MessageBox
+        type={messageBox.type}
+        message={messageBox.message}
+        isVisible={messageBox.isVisible}
+        onClose={handleCloseMessageBox}
+      />
     </div>
   );
 };

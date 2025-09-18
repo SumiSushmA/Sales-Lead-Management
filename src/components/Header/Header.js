@@ -66,7 +66,7 @@ const Header = () => {
           <div className="header-container">
             {/* Logo */}
             <div className="logo" onClick={() => navigate('/')}>
-              <span className="logo-text">Sales Lead</span>
+              <span className="logo-text">Evecta</span>
             </div>
 
             {/* Navigation Menu */}

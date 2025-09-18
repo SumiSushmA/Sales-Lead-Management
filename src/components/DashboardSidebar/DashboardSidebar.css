@@ -1,0 +1,359 @@
+/* Dashboard Sidebar Styles - Compact Vertical Design */
+.dashboard-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 300px;
+  background: #F8FAFC;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  transition: transform 0.3s ease, width 0.3s ease;
+  overflow: hidden;
+  border-right: 1px solid #E2E8F0;
+  box-sizing: border-box;
+}
+
+.dashboard-sidebar.sidebar-hidden {
+  transform: translateX(-100%);
+}
+
+/* Header - Logo */
+.sidebar-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #E2E8F0;
+  margin-bottom: 0;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.logo {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  color: #1E293B;
+  text-align: left;
+}
+
+.logo-icon {
+  width: 24px;
+  height: 24px;
+  background: #10B981;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  align-items: flex-start;
+}
+
+.logo-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1E293B;
+  line-height: 1.2;
+  margin: 0;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.logo-subtitle {
+  font-size: 13px;
+  color: #64748B;
+  line-height: 1.2;
+  margin: 0;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Navigation */
+.sidebar-nav {
+  flex: 1;
+  padding: 2px 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.nav-section {
+  margin-bottom: 0;
+}
+
+.section-header {
+  font-size: 12px;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+  padding: 0 20px 0 20px;
+  text-align: left;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.section-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  padding: 2px 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #64748B;
+  text-align: left;
+  width: 100%;
+  position: relative;
+  border-radius: 6px;
+  margin: 0 12px;
+  width: calc(100% - 24px);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Remove gap between section header and first item only */
+.section-items .nav-item:first-child {
+  margin-top: -12px;
+}
+
+/* Keep normal spacing between items within sections */
+.section-items .nav-item:not(:first-child) {
+  margin-top: 0;
+}
+
+.nav-item:hover {
+  background: #F1F5F9;
+  color: #334155;
+}
+
+.nav-item.active {
+  background: #1E293B;
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transform: scale(1.02);
+}
+
+.nav-icon {
+  color: #64748B;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.nav-item.active .nav-icon {
+  color: white;
+}
+
+.nav-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+  align-items: flex-start;
+}
+
+.nav-label {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #1E293B;
+  margin: 0;
+  white-space: nowrap;
+  text-align: left;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-sublabel {
+  font-size: 12px;
+  color: #475569;
+  line-height: 1.2;
+  margin: 0;
+  white-space: nowrap;
+  text-align: left;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+.nav-item.active .nav-label {
+  color: white;
+}
+
+.nav-item.active .nav-sublabel {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Footer */
+.sidebar-footer {
+  padding: 12px 20px;
+  border-top: 1px solid #E2E8F0;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.logout-button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 6px;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  margin: 0 12px;
+  width: calc(100% - 24px);
+  text-align: left;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.logout-button:hover {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
+  color: #1E293B;
+}
+
+.logout-button svg {
+  color: inherit;
+  width: 16px;
+  height: 16px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .dashboard-sidebar {
+    width: 240px;
+  }
+  
+  .sidebar-header {
+    padding: 20px 16px;
+  }
+  
+  .logo-icon {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .logo-title {
+    font-size: 16px;
+  }
+  
+  .logo-subtitle {
+    font-size: 12px;
+  }
+  
+  .sidebar-nav {
+    padding: 20px 0;
+  }
+  
+  .section-header {
+    font-size: 11px;
+    padding: 0 16px;
+  }
+  
+  .nav-item {
+    padding: 10px 16px;
+    margin: 0 8px;
+    width: calc(100% - 16px);
+  }
+  
+  .nav-label {
+    font-size: 13px;
+  }
+  
+  .nav-sublabel {
+    font-size: 11px;
+  }
+  
+  .sidebar-footer {
+    padding: 16px;
+  }
+  
+  .logout-button {
+    margin: 0 8px;
+    width: calc(100% - 16px);
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-sidebar {
+    width: 200px;
+  }
+  
+  .logo-title {
+    font-size: 16px;
+  }
+  
+  .logo-subtitle {
+    font-size: 12px;
+  }
+  
+  .nav-label {
+    font-size: 13px;
+  }
+  
+  .nav-sublabel {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-sidebar {
+    width: 180px;
+  }
+  
+  .logo-title {
+    font-size: 14px;
+  }
+  
+  .logo-subtitle {
+    font-size: 11px;
+  }
+  
+  .nav-label {
+    font-size: 12px;
+  }
+  
+  .nav-sublabel {
+    font-size: 10px;
+  }
+}

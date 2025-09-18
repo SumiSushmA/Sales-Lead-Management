@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
+import HowItWorks from '../../components/HowItWorks/HowItWorks';
 import './AboutPage.css';
 
 const AboutPage = () => {
@@ -135,55 +136,6 @@ const AboutPage = () => {
   };
 
 
-  const getParallaxCards = () => {
-    return [
-      {
-        id: 1,
-        title: "Lead Capture",
-        subtitle: "Multi-Channel Collection",
-        description: "Capture leads from multiple channels and score them in real-time for maximum conversion.",
-        features: [
-          "Multi-channel lead collection",
-          "Real-time lead scoring",
-          "Automated data validation",
-          "Instant lead assignment",
-          "CRM integration"
-        ],
-        image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop&auto=format&q=80",
-        color: "#6366f1"
-      },
-      {
-        id: 2,
-        title: "Lead Nurturing",
-        subtitle: "Personalized Engagement",
-        description: "Personalized engagement through automated sequences and multi-channel campaigns.",
-        features: [
-          "Automated email sequences",
-          "Behavioral trigger campaigns",
-          "Multi-channel touchpoints",
-          "Personalized content delivery",
-          "Lead scoring optimization"
-        ],
-        image: "https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&h=600&fit=crop&auto=format&q=80",
-        color: "#8b5cf6"
-      },
-      {
-        id: 3,
-        title: "Sales Conversion",
-        subtitle: "Seamless Handoff",
-        description: "Seamless handoff to sales teams with complete context and automated assignment.",
-        features: [
-          "Complete lead context transfer",
-          "Automated sales team assignment",
-          "Real-time lead activity tracking",
-          "Conversion analytics and reporting",
-          "Sales team performance insights"
-        ],
-        image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=800&h=600&fit=crop&auto=format&q=80",
-        color: "#06b6d4"
-      }
-    ];
-  };
 
   const getProblems = () => {
     return [
@@ -503,112 +455,12 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* Parallax Cards Section */}
-      <ParallaxCardsSection 
-        cards={getParallaxCards()}
-        isTouchDevice={isTouchDevice}
-      />
+      {/* How It Works Section */}
+      <HowItWorks />
 
     </div>
   );
 };
 
-// Parallax Cards Component
-const ParallaxCardsSection = ({ cards, isTouchDevice }) => {
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"]
-  });
-
-
-  return (
-    <section ref={containerRef} className="parallax-cards-section">
-        <div className="parallax-container">
-          <div className="parallax-sticky">
-            <div className="parallax-content">
-              <motion.h2 
-                className="parallax-title"
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8 }}
-                viewport={{ once: true }}
-              >
-                How It Works
-              </motion.h2>
-              
-              <div className="parallax-cards">
-                {cards.map((card, index) => (
-                  <ParallaxCard 
-                    key={card.id} 
-                    card={card} 
-                    index={index}
-                    scrollYProgress={scrollYProgress}
-                    isTouchDevice={isTouchDevice}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-  );
-};
-
-// Individual Parallax Card Component
-const ParallaxCard = ({ card, index, scrollYProgress, isTouchDevice }) => {
-  const cardRef = useRef(null);
-  const { scrollYProgress: cardScrollProgress } = useScroll({
-    target: cardRef,
-    offset: ["start end", "end start"]
-  });
-
-  // Parallax transforms
-  const y = useTransform(cardScrollProgress, [0, 1], [100, -100]);
-  const scale = useTransform(cardScrollProgress, [0, 0.1, 0.9, 1], [0.9, 1, 1, 0.9]);
-  const opacity = useTransform(cardScrollProgress, [0, 0.02, 0.98, 1], [0, 1, 1, 0]);
-
-  return (
-    <motion.div
-      ref={cardRef}
-      className="parallax-card"
-      style={{
-        y: isTouchDevice ? 0 : y,
-        scale: isTouchDevice ? 1 : scale,
-        opacity: isTouchDevice ? 1 : opacity,
-      }}
-      whileHover={!isTouchDevice ? { 
-        scale: 1.02,
-        transition: { type: "spring", stiffness: 300, damping: 20 }
-      } : {}}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.05 }}
-      viewport={{ once: true, margin: "-200px" }}
-    >
-      <div className="card-background" style={{ backgroundColor: card.color }}>
-        <img src={card.image} alt={card.title} className="card-image" />
-        <div className="card-overlay" />
-      </div>
-      
-      <div className="card-content">
-        <div className="card-number">0{card.id}</div>
-        <div className="card-text">
-          <h3 className="card-title">{card.title}</h3>
-          <p className="card-subtitle">{card.subtitle}</p>
-          <p className="card-description">{card.description}</p>
-          <ul className="card-features">
-            {card.features.map((feature, featureIndex) => (
-              <li key={featureIndex} className="feature-item">
-                {feature}
-              </li>
-            ))}
-          </ul>
-        </div>
-        
-    </div>
-    </motion.div>
-  );
-};
 
 export default AboutPage;

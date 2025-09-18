@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, useScroll, useTransform, useSpring } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import Lenis from '@studio-freight/lenis';
 import './HomePage.css';
 
 const HomePage = () => {
@@ -16,6 +17,80 @@ const HomePage = () => {
   const [activeFeature, setActiveFeature] = useState(0); // Track active feature image
   const [currentFeature, setCurrentFeature] = useState(0); // Track which feature card to show
   const [activeScrollSection, setActiveScrollSection] = useState(1); // Track which scroll section is active
+  
+  // Parallax refs
+  const howItWorksRef = useRef(null);
+  const card1Ref = useRef(null);
+  const card2Ref = useRef(null);
+  const card3Ref = useRef(null);
+
+  // Lenis smooth scroll setup
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      direction: 'vertical',
+      gestureDirection: 'vertical',
+      smooth: true,
+      mouseMultiplier: 1,
+      smoothTouch: false,
+      touchMultiplier: 2,
+      infinite: false,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
+
+  // Scroll-based parallax animations
+  const { scrollYProgress: howItWorksProgress } = useScroll({
+    target: howItWorksRef,
+    offset: ["start end", "end start"]
+  });
+
+  const { scrollYProgress: card1Progress } = useScroll({
+    target: card1Ref,
+    offset: ["start end", "end start"]
+  });
+
+  const { scrollYProgress: card2Progress } = useScroll({
+    target: card2Ref,
+    offset: ["start end", "end start"]
+  });
+
+  const { scrollYProgress: card3Progress } = useScroll({
+    target: card3Ref,
+    offset: ["start end", "end start"]
+  });
+
+  // Transform values for parallax effects
+  const card1Y = useTransform(card1Progress, [0, 1], [100, -100]);
+  const card1Scale = useTransform(card1Progress, [0, 0.5, 1], [0.8, 1, 0.8]);
+  const card1Opacity = useTransform(card1Progress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+
+  const card2Y = useTransform(card2Progress, [0, 1], [120, -120]);
+  const card2Scale = useTransform(card2Progress, [0, 0.5, 1], [0.8, 1, 0.8]);
+  const card2Opacity = useTransform(card2Progress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+
+  const card3Y = useTransform(card3Progress, [0, 1], [140, -140]);
+  const card3Scale = useTransform(card3Progress, [0, 0.5, 1], [0.8, 1, 0.8]);
+  const card3Opacity = useTransform(card3Progress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+
+  // Spring animations for smooth entrance
+  const springConfig = {
+    type: "spring",
+    stiffness: 100,
+    damping: 20,
+    mass: 1
+  };
 
 
   const handleMouseDown = (e) => {
@@ -561,8 +636,8 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* How it Works Section - Scroll-based Reveal Design */}
-      <section id="how-it-works" className="how-it-works-section">
+      {/* How it Works Section - Parallax Scroll Design */}
+      <section id="how-it-works" ref={howItWorksRef} className="how-it-works-section">
         <div className="section-header">
           <h2>How It Works</h2>
           <div className="manual-navigation">
@@ -588,7 +663,25 @@ const HomePage = () => {
         </div>
         <div className="how-it-works-container">
           {/* Section 1: Lead Capture - Light Beige */}
-          <div className={`scroll-reveal-section section-1 ${activeScrollSection === 1 ? 'active' : ''}`}>
+          <motion.div 
+            ref={card1Ref}
+            className="scroll-reveal-section section-1"
+            style={{
+              y: card1Y,
+              scale: card1Scale,
+              opacity: card1Opacity,
+            }}
+            initial={{ y: 100, scale: 0.8, opacity: 0 }}
+            animate={{ y: 0, scale: 1, opacity: 1 }}
+            transition={springConfig}
+            whileInView={{ 
+              y: 0, 
+              scale: 1, 
+              opacity: 1,
+              transition: { ...springConfig, delay: 0.1 }
+            }}
+            viewport={{ once: false, margin: "-100px" }}
+          >
             <div className="section-number">001</div>
             <div className="section-content">
               <h3 className="section-title">Lead Capture</h3>
@@ -608,10 +701,28 @@ const HomePage = () => {
                 </svg>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Section 2: Lead Nurturing - Medium Beige */}
-          <div className={`scroll-reveal-section section-2 ${activeScrollSection === 2 ? 'active' : ''}`}>
+          <motion.div 
+            ref={card2Ref}
+            className="scroll-reveal-section section-2"
+            style={{
+              y: card2Y,
+              scale: card2Scale,
+              opacity: card2Opacity,
+            }}
+            initial={{ y: 120, scale: 0.8, opacity: 0 }}
+            animate={{ y: 0, scale: 1, opacity: 1 }}
+            transition={springConfig}
+            whileInView={{ 
+              y: 0, 
+              scale: 1, 
+              opacity: 1,
+              transition: { ...springConfig, delay: 0.2 }
+            }}
+            viewport={{ once: false, margin: "-100px" }}
+          >
             <div className="section-number">002</div>
             <div className="section-content">
               <h3 className="section-title">Lead Nurturing</h3>
@@ -631,10 +742,28 @@ const HomePage = () => {
                 </svg>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Section 3: Sales Conversion - Darker Tan */}
-          <div className={`scroll-reveal-section section-3 ${activeScrollSection === 3 ? 'active' : ''}`}>
+          <motion.div 
+            ref={card3Ref}
+            className="scroll-reveal-section section-3"
+            style={{
+              y: card3Y,
+              scale: card3Scale,
+              opacity: card3Opacity,
+            }}
+            initial={{ y: 140, scale: 0.8, opacity: 0 }}
+            animate={{ y: 0, scale: 1, opacity: 1 }}
+            transition={springConfig}
+            whileInView={{ 
+              y: 0, 
+              scale: 1, 
+              opacity: 1,
+              transition: { ...springConfig, delay: 0.3 }
+            }}
+            viewport={{ once: false, margin: "-100px" }}
+          >
             <div className="section-number">003</div>
             <div className="section-content">
               <h3 className="section-title">Sales Conversion</h3>
@@ -654,7 +783,7 @@ const HomePage = () => {
                 </svg>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 

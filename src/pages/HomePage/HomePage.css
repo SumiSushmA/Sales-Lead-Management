@@ -2488,7 +2488,7 @@ html {
   }
 }
 
-/* How it Works Section - Normal Section */
+/* How it Works Section - Parallax Section */
 .how-it-works-section {
   width: 100%;
   padding: 80px 0; /* Same as about-like-section */
@@ -2498,6 +2498,9 @@ html {
   margin: 0;
   z-index: 10;
   display: block;
+  /* GPU optimization */
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .section-header {
@@ -2601,7 +2604,7 @@ html {
 }
 
 
-/* Scroll Reveal Sections - Standard Layout */
+/* Scroll Reveal Sections - Parallax Layout */
 .scroll-reveal-section {
   position: relative;
   width: 100%;
@@ -2611,13 +2614,30 @@ html {
   align-items: flex-start;
   justify-content: space-between;
   padding: 2rem;
-  opacity: 0.3;
-  visibility: visible;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 1;
   border-radius: 15px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   min-height: 200px;
+  /* GPU optimization for smooth animations */
+  will-change: transform, opacity;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal-section {
+    will-change: auto;
+    transform: none;
+    backface-visibility: visible;
+    -webkit-backface-visibility: visible;
+  }
+  
+  .how-it-works-section {
+    will-change: auto;
+    transform: none;
+  }
 }
 
 .scroll-reveal-section.active {
